@@ -3,16 +3,17 @@ from discord.ext import commands
 
 config = {
     'token': 'token',
-    'prefix': 'prefix',
+    'prefix': '!',
 }
 
-bot = commands.Bot(command_prefix=config['prefix'], intents=discord.Intents.default())
+bot = commands.Bot(command_prefix='!', intents=discord.Intents.all())
 
 
-@bot.event
-async def on_message(ctx):
-    if ctx.author != bot.user:
-        await ctx.reply(ctx.content)
+@bot.command(name='test')
+async def test(ctx, arg):
+    print(arg)
+    #if message.author != bot.user:
+    #    await message.channel.send(message)
 
 
 bot.run(config['token'])
