@@ -1,19 +1,32 @@
 import discord
 from discord.ext import commands
-
-config = {
-    'token': 'token',
-    'prefix': '!',
-}
+import requests
+import validators
+from urllib.parse import urlparse
 
 bot = commands.Bot(command_prefix='!', intents=discord.Intents.all())
 
 
-@bot.command(name='test')
-async def test(ctx, arg):
-    print(arg)
-    #if message.author != bot.user:
-    #    await message.channel.send(message)
+links = []
 
 
-bot.run(config['token'])
+@bot.command(name='add')
+async def add(ctx, arg):
+
+    if not validators.url(str(arg)):
+        await ctx.channel.send('Необходимо ввести ссылку на видео после команды !add')
+        return
+    else:
+        r = requests.get(str(arg))
+        if r.status_code != 200:
+            await ctx.channel.send('404 error')
+            return
+        domain = urlparse(str(arg)).netloc
+        if domain != 'www.youtube.com':
+            await ctx.channel.send('Необходимо ввести ссылку на видео из youtube.com')
+            return
+        links.append(str(arg))
+        await ctx.channel.send('Добавлено!')
+
+
+bot.run('')
