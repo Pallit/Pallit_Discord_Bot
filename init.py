@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 
 config = {
-    'token': 'MTA5NDcwMzYyODMxNDQ5Mjk2OA.Gjcg2q.qrCJFCHCl4VKMP3MSTSt9bh2pHS0GCyPmGU7ns',
+    'token': 'token',
     'prefix': 'prefix',
 }
 
