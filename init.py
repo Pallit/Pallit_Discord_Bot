@@ -4,7 +4,7 @@ import requests
 import validators
 from urllib.parse import urlparse
 
-bot = commands.Bot(command_prefix='!', intents=discord.Intents.all())
+bot = commands.Bot(command_prefix='/', intents=discord.Intents.all())
 
 
 links = []
@@ -29,4 +29,10 @@ async def add(ctx, arg):
         await ctx.channel.send('Добавлено!')
 
 
-bot.run('')
+@bot.command(name='list')
+async def links_list(ctx):
+    await ctx.channel.send(links)
+
+
+
+bot.run('MTA5NDcwMzYyODMxNDQ5Mjk2OA.Gzgt1e.NCWYC9g5zeicubJz8SZE2FIGsoSoSdhPw5xRIw')
