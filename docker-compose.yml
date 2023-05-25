@@ -1,0 +1,11 @@
+version: "3.9"
+
+services:
+  Pallit_Discord_Bot:
+    container_name: Pallit_Discord_Bot
+    working_dir: /Pallit_Discord_Bot
+    restart: always
+    build:
+        context: .
+        dockerfile: Dockerfile
+    command: sh -c "python init.py"
