@@ -4,11 +4,13 @@ import requests
 import validators
 from urllib.parse import urlparse
 import yt_dlp
+import asyncio
 
 bot = commands.Bot(command_prefix='/', intents=discord.Intents.all())
 
 
 links = []
+
 
 @bot.command(name='add')
 async def add(ctx, arg):
@@ -35,7 +37,7 @@ async def links_list(ctx):
 
 
 @bot.command(name='play')
-async def play(ctx, url):
+async def play(ctx):
     if not ctx.message.author.voice:
         return
     else:
@@ -44,18 +46,23 @@ async def play(ctx, url):
     if bot_client is None:
         await channel.connect()
 
-    server = ctx.message.guild
-    channel = server.voice_client
     YDL_OPTIONS = {'format': 'bestaudio', 'noplaylist': 'True'}
     FFMPEG_OPTIONS = {'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5','options': '-vn'}
     voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
-    if not voice.is_playing():
+    if not voice.is_playing() and len(links) > 0:
+        url = links.pop(0)
         with yt_dlp.YoutubeDL(YDL_OPTIONS) as ydl:
             info = ydl.extract_info(url, download=False)
         URL = info['url']
-        voice.play(discord.FFmpegPCMAudio(source=URL, **FFMPEG_OPTIONS))
+        voice.play(source=discord.FFmpegPCMAudio(source=URL, **FFMPEG_OPTIONS), after=lambda e: play_next(ctx))
         voice.is_playing()
-        await ctx.send('Bot is playing')
+        await ctx.send('Сейчас играет: '+url)
+
+
+def play_next(ctx):
+    voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
+    if len(links) > 0 and not voice.is_playing():
+        asyncio.run_coroutine_threadsafe(play(ctx), bot.loop)
 
 
 @bot.event
@@ -69,4 +76,4 @@ async def on_voice_state_update(member, before, after):
         await bot_client.disconnect(force=True)
 
 
-bot.run('MTEwOTE3NjEzMzI2Nzc3MTU4Mw.GbVN6d.cTgxwHDUaekXvU7CRc9UrfE-6Lg-FgjclO4y1w')
+bot.run('token')
