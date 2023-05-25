@@ -8,13 +8,11 @@ import asyncio
 
 bot = commands.Bot(command_prefix='$', intents=discord.Intents.all())
 
-
 links = []
 
 
 @bot.command(name='add')
 async def add(ctx, arg):
-
     if not validators.url(str(arg)):
         await ctx.channel.send('Необходимо ввести ссылку на видео после команды !add')
         return
@@ -58,7 +56,7 @@ async def play(ctx):
         await channel.connect()
 
     YDL_OPTIONS = {'format': 'bestaudio', 'noplaylist': 'True'}
-    FFMPEG_OPTIONS = {'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5','options': '-vn'}
+    FFMPEG_OPTIONS = {'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}
     voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
     if not voice.is_playing() and len(links) > 0:
         url = links.pop(0)
@@ -67,7 +65,7 @@ async def play(ctx):
         URL = info['url']
         voice.play(source=discord.FFmpegPCMAudio(source=URL, **FFMPEG_OPTIONS), after=lambda e: play_next(ctx))
         voice.is_playing()
-        await ctx.channel.send('Сейчас играет: '+url)
+        await ctx.channel.send('Сейчас играет: ' + url)
 
 
 def play_next(ctx):
@@ -95,6 +93,12 @@ async def resume(ctx):
     voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
     if voice.is_paused():
         voice.resume()
+
+
+@bot.command(name='skip')
+async def skip(ctx):
+    await stop(ctx)
+    await play(ctx)
 
 
 @bot.event
