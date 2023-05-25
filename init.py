@@ -47,10 +47,12 @@ async def clear_links_list(ctx):
 
 @bot.command(name='play')
 async def play(ctx):
+    if len(links) == 0:
+        await ctx.channel.send('Очередь пуста')
+        return
     if not ctx.message.author.voice:
         return
-    else:
-        channel = ctx.message.author.voice.channel
+    channel = ctx.message.author.voice.channel
     bot_client = discord.utils.get(ctx.bot.voice_clients, guild=ctx.guild)
     if bot_client is None:
         await channel.connect()
@@ -72,6 +74,13 @@ def play_next(ctx):
     voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
     if len(links) > 0 and not voice.is_playing():
         asyncio.run_coroutine_threadsafe(play(ctx), bot.loop)
+
+
+@bot.command(name='stop')
+async def stop(ctx):
+    voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
+    if voice.is_playing():
+        voice.stop()
 
 
 @bot.event
