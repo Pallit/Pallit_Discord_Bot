@@ -83,6 +83,20 @@ async def stop(ctx):
         voice.stop()
 
 
+@bot.command(name='pause')
+async def pause(ctx):
+    voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
+    if voice.is_playing():
+        voice.pause()
+
+
+@bot.command(name='resume')
+async def resume(ctx):
+    voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
+    if voice.is_paused():
+        voice.resume()
+
+
 @bot.event
 async def on_voice_state_update(member, before, after):
     bot_client = discord.utils.get(bot.voice_clients)
