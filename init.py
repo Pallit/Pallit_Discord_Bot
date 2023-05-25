@@ -6,7 +6,7 @@ from urllib.parse import urlparse
 import yt_dlp
 import asyncio
 
-bot = commands.Bot(command_prefix='/', intents=discord.Intents.all())
+bot = commands.Bot(command_prefix='$', intents=discord.Intents.all())
 
 
 links = []
@@ -33,7 +33,16 @@ async def add(ctx, arg):
 
 @bot.command(name='list')
 async def links_list(ctx):
-    await ctx.channel.send(links)
+    if len(links) > 0:
+        await ctx.channel.send(links)
+    else:
+        await ctx.channel.send('Очередь пуста')
+
+
+@bot.command(name='clear')
+async def clear_links_list(ctx):
+    links.clear()
+    await ctx.channel.send('Очередь очищена')
 
 
 @bot.command(name='play')
@@ -56,7 +65,7 @@ async def play(ctx):
         URL = info['url']
         voice.play(source=discord.FFmpegPCMAudio(source=URL, **FFMPEG_OPTIONS), after=lambda e: play_next(ctx))
         voice.is_playing()
-        await ctx.send('Сейчас играет: '+url)
+        await ctx.channel.send('Сейчас играет: '+url)
 
 
 def play_next(ctx):
