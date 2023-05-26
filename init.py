@@ -17,8 +17,9 @@ links = []
 async def add(ctx, arg):
     if not validators.url(str(arg)):
         videos_search = VideosSearch(str(arg), limit=1)
-        links.append(videos_search.result()['result'][0]['link'])
-        await ctx.channel.send('Добавлено!')
+        link = videos_search.result()['result'][0]['link']
+        links.append(link)
+        await ctx.channel.send('добавлено: '+link)
     else:
         r = requests.get(str(arg))
         if r.status_code != 200:
@@ -29,7 +30,7 @@ async def add(ctx, arg):
             await ctx.channel.send('Необходимо ввести ссылку на видео из youtube.com')
             return
         links.append(str(arg))
-        await ctx.channel.send('Добавлено!')
+        await ctx.channel.send('добавлено')
 
 
 @bot.command(name='list')
@@ -58,17 +59,21 @@ async def play(ctx):
     if bot_client is None:
         await channel.connect()
 
-    YDL_OPTIONS = {'format': 'bestaudio', 'noplaylist': 'True'}
+    YDL_OPTIONS = {'format': 'bestaudio'}
     FFMPEG_OPTIONS = {'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}
     voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
     if not voice.is_playing() and len(links) > 0:
         url = links.pop(0)
-        with yt_dlp.YoutubeDL(YDL_OPTIONS) as ydl:
-            info = ydl.extract_info(url, download=False)
-        URL = info['url']
-        voice.play(source=discord.FFmpegPCMAudio(source=URL, **FFMPEG_OPTIONS), after=lambda e: play_next(ctx))
-        voice.is_playing()
-        await ctx.channel.send('Сейчас играет: ' + url)
+        try:
+            with yt_dlp.YoutubeDL(YDL_OPTIONS) as ydl:
+                info = ydl.extract_info(url, download=False)
+            URL = info['url']
+            voice.play(source=discord.FFmpegPCMAudio(source=URL, **FFMPEG_OPTIONS), after=lambda e: play_next(ctx))
+            voice.is_playing()
+            await ctx.channel.send('Сейчас играет: ' + url)
+        except yt_dlp.utils.DownloadError:
+            await ctx.channel.send('Видео недоступно: ' + url)
+            await play(ctx)
 
 
 def play_next(ctx):
@@ -82,6 +87,7 @@ async def stop(ctx):
     voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
     if voice.is_playing():
         voice.stop()
+        await voice.disconnect(force=True)
 
 
 @bot.command(name='pause')
@@ -115,4 +121,4 @@ async def on_voice_state_update(member, before, after):
         await bot_client.disconnect(force=True)
 
 
-bot.run('token')
+bot.run('MTEwOTE3NjEzMzI2Nzc3MTU4Mw.GwQxOj.mwZZhphB0yVzNJsbrGwx0tdvB8W65Zxgxua-0U')
