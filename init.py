@@ -5,6 +5,8 @@ import validators
 from urllib.parse import urlparse
 import yt_dlp
 import asyncio
+from youtubesearchpython import VideosSearch
+
 
 bot = commands.Bot(command_prefix='$', intents=discord.Intents.all())
 
@@ -14,8 +16,9 @@ links = []
 @bot.command(name='add')
 async def add(ctx, arg):
     if not validators.url(str(arg)):
-        await ctx.channel.send('Необходимо ввести ссылку на видео после команды !add')
-        return
+        videos_search = VideosSearch(str(arg), limit=1)
+        links.append(videos_search.result()['result'][0]['link'])
+        await ctx.channel.send('Добавлено!')
     else:
         r = requests.get(str(arg))
         if r.status_code != 200:
