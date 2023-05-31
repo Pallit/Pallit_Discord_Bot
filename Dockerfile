@@ -8,6 +8,8 @@ ENV PIP_ROOT_USER_ACTION=ignore
 
 WORKDIR /Pallit_Discord_Bot
 
+ENV R_TELEGRAM_BOT_botname ТОКЕН_ВАШЕГО_БОТА
+
 COPY ./requirements.txt ./
 
 RUN apt-get update && \
@@ -26,3 +28,5 @@ RUN pip install --no-cache-dir -r ./requirements.txt
 COPY ./ ./
 
 RUN chmod -R 777 ./
+
+CMD python3 init.py

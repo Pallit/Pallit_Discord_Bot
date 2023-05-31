@@ -6,6 +6,7 @@ from urllib.parse import urlparse
 import yt_dlp
 import asyncio
 from youtubesearchpython import VideosSearch
+import os
 
 
 bot = commands.Bot(command_prefix='$', intents=discord.Intents.all())
@@ -121,4 +122,8 @@ async def on_voice_state_update(member, before, after):
         await bot_client.disconnect(force=True)
 
 
-bot.run('MTEwOTE3NjEzMzI2Nzc3MTU4Mw.GwQxOj.mwZZhphB0yVzNJsbrGwx0tdvB8W65Zxgxua-0U')
+try:
+    token = os.environ['R_TELEGRAM_BOT_botname']
+    bot.run(token)
+except KeyError:
+    print("Токен не найден")
