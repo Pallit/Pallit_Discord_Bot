@@ -1,0 +1,45 @@
+body {
+  background-color: #242424;
+}
+
+h1 {
+    color: white;
+    font-family: ubuntu;
+    font-size: 500%;
+    text-align: center;
+}
+
+h2 {
+    color: white;
+    font-family: ubuntu;
+    font-size: 300%;
+    text-align: center;
+}
+
+h3 {
+    text-align: center;
+}
+
+h4 {
+    color: white;
+    font-family: ubuntu;
+    text-align: end;
+    position: absolute;
+    font-size: 150%;
+    bottom: 0;
+}
+
+.button {
+  background-color: #4CAF50;
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  font-family: ubuntu;
+  display: inline-block;
+  font-size: 20px;
+  margin: 4px 2px;
+  cursor: pointer;
+  align: center;
+}

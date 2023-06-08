@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home Page</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h1>
+        Botyara
+    </h1>
+    <h2>
+        Musical bot
+    </h2>
+    <h3>
+        <a href="{{discord_url}}">
+            <button class="button">Get started!</button>
+        </a>
+    </h3>
+    <h4>
+        Developed by Niyaz Valeev
+        <a href="https://github.com/Pallit/Pallit_Discord_Bot">
+            <img src="{{ url_for('static', filename='github_white.png') }}" width="50" height="50">
+        </a>
+        <a href="https://t.me/RainySandpiper">
+            <img src="{{ url_for('static', filename='telegram.png') }}" width="50" height="50">
+        </a>
+    </h4>
+</body>
+</html>
